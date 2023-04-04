@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import TodoForm from "./components/TodoForm";
+import TodoItem from "./components/TodoItem";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [todos, setTodos] = useState([]);
+    const addTask = (userInput) => {
+        if (userInput) {
+            const newTask = {
+                id: Date.now(),
+                task: userInput,
+                completed: false,
+            };
+            setTodos([...todos, newTask]);
+        }
+    };
+    const removeTask = (id) => {
+        setTodos([...todos.filter((todo) => todo.id !== id)]);
+    };
+
+    const toggleTask = (id) => {
+        setTodos([
+            ...todos.map((todo) =>
+                todo.id === id ? { ...todo, completed: !todo.completed } : { ...todo }
+            ),
+        ]);
+    };
+    return (
+        <div className="todo-app">
+            <h1>Todo List</h1>
+            <TodoForm addTask={addTask} />
+            <hr className="separator" />
+            {todos.map((todo) => (
+                <TodoItem
+                    todo={todo}
+                    key={todo.id}
+                    removeTask={removeTask}
+                    toggleTask={toggleTask}
+                />
+            ))}
+        </div>
+    );
 }
 
 export default App;
